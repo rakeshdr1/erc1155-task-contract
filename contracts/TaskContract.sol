@@ -16,11 +16,13 @@ contract TaskContract is ERC1155 {
     constructor() ERC1155("") {}
 
     function mintTokenF(uint256 amount) external payable {
+        restrictExternalCaller();
         require(msg.value >= MintTokenFCost * amount, "Not enough ether sent");
         _mint(msg.sender, TokenF, amount, "");
     }
 
     function mintTokenN(uint256 tokenCount) external {
+        restrictExternalCaller();
         require(
             balanceOf(msg.sender, TokenF) >= tokenCount * MintTokenNCost,
             "Not enough Token F sent"
@@ -40,6 +42,7 @@ contract TaskContract is ERC1155 {
     }
 
     function mintTokenT(uint256 tokenCount) external {
+        restrictExternalCaller();
         require(
             balanceOf(msg.sender, TokenF) >= tokenCount * MintTokenTCost,
             "Not enough Token F sent"
@@ -75,5 +78,9 @@ contract TaskContract is ERC1155 {
         bytes memory
     ) public virtual returns (bytes4) {
         return this.onERC1155BatchReceived.selector;
+    }
+
+    function restrictExternalCaller() private view {
+        require(msg.sender.code.length == 0, "Caller cannot be contract");
     }
 }

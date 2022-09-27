@@ -8,7 +8,7 @@ async function main() {
   await task.deployed();
 
   console.log(
-    `TaskContract deployed to ${task.address} from Address ${deployer}`
+    `TaskContract deployed to ${task.address} from Address ${deployer.address}`
   );
 }
 
