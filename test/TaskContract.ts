@@ -27,7 +27,7 @@ describe("TaskContract", function () {
     it("Should set the right cost for Token F minting", async function () {
       const { task } = await loadFixture(deployTaskContractFixture);
 
-      expect(await task.MintTokenFCost()).to.equal(
+      expect(await task.MINT_TOKEN_F_COST()).to.equal(
         ethers.utils.parseEther("0.01")
       );
     });
@@ -35,13 +35,13 @@ describe("TaskContract", function () {
     it("Should set the right cost for Token N minting", async function () {
       const { task } = await loadFixture(deployTaskContractFixture);
 
-      expect(await task.MintTokenNCost()).to.equal(3);
+      expect(await task.MINT_TOKEN_N_COST()).to.equal(3);
     });
 
     it("Should set the right cost for Token T minting", async function () {
       const { task } = await loadFixture(deployTaskContractFixture);
 
-      expect(await task.MintTokenTCost()).to.equal(10);
+      expect(await task.MINT_TOKEN_T_COST()).to.equal(10);
     });
   });
 
