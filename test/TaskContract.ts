@@ -20,7 +20,10 @@ describe("TaskContract", function () {
     const Task = await ethers.getContractFactory("TaskContract");
     const task = await Task.deploy();
 
-    return { task, owner, user1, user2 };
+    const Test = await ethers.getContractFactory("TestTaskContract");
+    const test = await Test.deploy(task.address);
+
+    return { task, test, owner, user1, user2 };
   }
 
   describe("Deployment", function () {
@@ -42,6 +45,22 @@ describe("TaskContract", function () {
       const { task } = await loadFixture(deployTaskContractFixture);
 
       expect(await task.MINT_TOKEN_T_COST()).to.equal(10);
+    });
+
+    it("should revert if caller is a contract", async () => {
+      const { test } = await loadFixture(deployTaskContractFixture);
+
+      await expect(test.testMintF()).to.be.revertedWith(
+        "Caller cannot be contract"
+      );
+
+      await expect(test.testMintN()).to.be.revertedWith(
+        "Caller cannot be contract"
+      );
+
+      await expect(test.testMintT()).to.be.revertedWith(
+        "Caller cannot be contract"
+      );
     });
   });
 
@@ -117,6 +136,17 @@ describe("TaskContract", function () {
       await task.mintTokenN(1);
       await expect(task.mintTokenT(3)).to.be.revertedWith(
         "Not enough Token N sent"
+      );
+    });
+
+    it("Should fail minting Token T if Token F balance of user is lower than required", async function () {
+      const { task } = await loadFixture(deployTaskContractFixture);
+      await task.mintTokenF(10, { value: ethers.utils.parseEther("0.1") });
+
+      await task.setApprovalForAll(task.address, true);
+      await task.mintTokenN(1);
+      await expect(task.mintTokenT(3)).to.be.revertedWith(
+        "Not enough Token F sent"
       );
     });
 
